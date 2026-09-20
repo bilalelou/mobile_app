@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
-// import 'dart:io'; // Disabled for Web preview
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../core/constants.dart';
 import 'download_task.dart';
@@ -115,13 +115,13 @@ class DownloadManager {
   /// Download a single file using Dio with progress tracking
   Future<void> _downloadFile(DownloadTask task) async {
     // Ensure the directory exists
-    // final dir = Directory(task.savePath.substring(
-    //   0,
-    //   task.savePath.lastIndexOf('/'),
-    // ));
-    // if (!dir.existsSync()) {
-    //   dir.createSync(recursive: true);
-    // }
+    final dir = Directory(task.savePath.substring(
+      0,
+      task.savePath.lastIndexOf(Platform.pathSeparator.isEmpty ? '/' : Platform.pathSeparator),
+    ));
+    if (!dir.existsSync()) {
+      dir.createSync(recursive: true);
+    }
 
     _currentCancelToken = CancelToken();
 
@@ -136,14 +136,14 @@ class DownloadManager {
 
     try {
       // Check if partial download exists (for resume)
-      // final file = File(task.savePath);
+      final file = File(task.savePath);
       int downloadedBytes = 0;
-      // if (file.existsSync()) {
-      //   downloadedBytes = file.lengthSync();
-      //   if (downloadedBytes > 0) {
-      //     print('  📥 Resuming from ${(downloadedBytes / 1024 / 1024).toStringAsFixed(1)} MB');
-      //   }
-      // }
+      if (file.existsSync()) {
+        downloadedBytes = file.lengthSync();
+        if (downloadedBytes > 0) {
+          print('  📥 Resuming from ${(downloadedBytes / 1024 / 1024).toStringAsFixed(1)} MB');
+        }
+      }
 
       await dio.download(
         task.directUrl,

@@ -32,8 +32,7 @@ class AppHttpClient {
       ...?extraHeaders,
     };
 
-    final proxiedUrl = 'https://corsproxy.io/?url=' + Uri.encodeComponent(url);
-    final response = await _client.get(Uri.parse(proxiedUrl), headers: headers);
+    final response = await _client.get(Uri.parse(url), headers: headers);
 
     // Cache cookies for session persistence
     final setCookie = response.headers['set-cookie'];
@@ -81,8 +80,7 @@ class AppHttpClient {
       ...?extraHeaders,
     };
 
-    final proxiedUrl = 'https://corsproxy.io/?url=' + Uri.encodeComponent(url);
-    return await _client.get(Uri.parse(proxiedUrl), headers: headers);
+    return await _client.get(Uri.parse(url), headers: headers);
   }
 
   /// Extract origin (scheme + host) from URL for Referer header
